@@ -12,8 +12,8 @@ def index():
     if request.method == 'GET':
         return "<p>Plantain API running!</p>"
     elif request.method == 'POST':
-        
-        return {"msg": "AYO"}
+        file = request.files['file']
+        return {"msg": "AYO", "filename": file.filename}
     else:
         return "<p>Wrong Method</p>"
     
