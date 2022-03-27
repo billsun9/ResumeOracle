@@ -11,7 +11,7 @@ def parse_search(s):
     return s.replace(" ", "%20")
 
 def get_job_data(search_str):
-    QUERY = 'https://api.adzuna.com/v1/api/jobs/us/search/1?app_id=b2a11ec2&app_key=dbb7646792780c6c5127eb2bd9f9e15c&results_per_page=25'
+    QUERY = 'https://api.adzuna.com/v1/api/jobs/us/search/1?app_id=b2a11ec2&app_key=dbb7646792780c6c5127eb2bd9f9e15c&results_per_page=10'
     headers = {'Content-Type': 'applications/json',
                'Access-Control-Allow-Origin':'*',
                'Access-Control-Allow-Methods':'GET'}
@@ -20,5 +20,11 @@ def get_job_data(search_str):
     query = '%s&what=%s' % (QUERY, search_keywords)
     req = requests.get(query, headers=headers)
     if req.status_code == 200:
-        return {"msg": "OK", "data": json.loads(req.text)['results']}
-    return {"msg":"FAILED!"}
+        res = []
+        for item in json.loads(req.text)['results']:
+            res.append({'company':item['company']['display_name'], 
+                        'description':item['description'], 
+                        'title':item['title'],
+                        'link':item['redirect_url']})
+        return res
+    return ["FAILED!"]

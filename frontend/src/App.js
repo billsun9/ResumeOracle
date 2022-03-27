@@ -1,16 +1,15 @@
-import logo from './logo.svg';
 import './App.css';
-import axios from 'axios';
 
-import { useEffect } from 'react';
-import { Upload, message, Button } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-
+import { useState } from 'react';
+import { Upload, message, Button, Layout, PageHeader, Card } from 'antd';
+import { UploadOutlined, StepBackwardOutlined } from '@ant-design/icons';
+import { CompanyCard } from './CompanyCard';
 import 'antd/dist/antd.css';
 
-function App() {
+const { Header, Footer, Sider, Content } = Layout;
 
+function App() {
+  const [data, setData] = useState([])
   const props = {
     name: 'file',
     accept: '.pdf,.doc,.docx',
@@ -24,6 +23,7 @@ function App() {
         console.log(info.file, info.fileList);
       }
       if (info.file.status === 'done') {
+        setData(() => info.file.response.payload);
         message.success(`${info.file.name} file uploaded successfully`);
       } else if (info.file.status === 'error') {
         message.error(`${info.file.name} file upload failed.`);
@@ -31,34 +31,40 @@ function App() {
     },
   };
 
-  useEffect(() => {
-    console.log("hello");
-    const query = "machine learning engineer"
-    axios.post('http://127.0.0.1:5000/api/v0/pull', {"search_query": query})
-      .then(res => console.log(res))
-      .catch(err => console.log(err))
-  }, [])
-  
   return (
-    <Router>
-      <Switch>
-        <Route exact path='/'>
-          <div className="App">
-            <header className="App-header">
-              <div>
-                Resume Oracle: Find Your Dream Job!
-              </div>
-              <Upload {...props}>
-                <Button size={"large"} icon={<UploadOutlined />}>Click to Upload</Button>
-              </Upload>
-            </header>
+
+    <div className="App">
+      <header className="App-header">
+        {data.length > 0 ? (
+          <div>
+            <Layout className="layout" style={{width: '100vw', height: '100vh'}}>
+              <Content style={{ padding: '0 50px', overflowY: 'scroll' }}>
+                <PageHeader onBack={() => setData([])} title="Return" subTitle="upload another resume?" />
+                <Card title="Relevant Jobs">
+                  {data.map((company) => {
+                    return <Card.Grid style={{width:"50%"}}><CompanyCard company={company}/></Card.Grid>
+                  })}
+                </Card>
+                {/* {data.map((company) => {
+                  return <CompanyCard company={company}/>
+                })} */}
+              </Content>
+              <Footer style={{textAlign: 'center', background: '#282c34', color: 'white'}}>ResumeOracle © 2022</Footer>
+            </Layout>
+            
+            
           </div>
-        </Route>
-        <Route exact path='/search'>
-          <SearchResults />
-        </Route>
-      </Switch>
-    </Router>
+        ): (
+          <div>
+            <div>Resume Oracle: Find Your Dream Job!</div>
+            <Upload {...props}>
+              <Button size={"large"} icon={<UploadOutlined />}>Click to Upload</Button>
+            </Upload>
+          </div>
+        )}
+        
+      </header>
+    </div>
     
   );
 }
