@@ -1,10 +1,9 @@
-import os
-
 # import local files
 from extract_text import extract_text
 from extract_skills import extract_skills
 
 # # download spacy model
+# import os
 # os.system('python -m spacy download en_core_web_sm')
 
 
