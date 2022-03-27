@@ -8,8 +8,6 @@ from pdfminer.layout import LAParams
 from pdfminer.pdfinterp import PDFPageInterpreter
 from pdfminer.pdfparser import PDFSyntaxError
 
-from icecream import ic
-
 
 def extract_text_from_pdf(pdf_path):
     '''
